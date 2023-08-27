@@ -210,70 +210,105 @@ require('lazy').setup({
   --    Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   --
   --    For additional information see: https://github.com/folke/lazy.nvim#-structuring-your-plugins
-  -- { import = 'custom.plugins' },
+  { import = 'custom.plugins' },
 }, {})
 
 -- [[ Setting options ]]
--- See `:help vim.o`
--- NOTE: You can change these options as you wish!
+--     _       _ __    __           
+--    (_)___  (_) /_  / /_  ______ _
+--   / / __ \/ / __/ / / / / / __ `/
+--  / / / / / / /__ / / /_/ / /_/ / 
+-- /_/_/ /_/_/\__(_)_/\__,_/\__,_/  (init.lua settings)
+-- See `:help vim.o` `:help option-summary`
 
--- Set highlight on search
-vim.o.hlsearch = false
+-- DISPLAY SETTINGS
+vim.wo.number = true            -- show line numbers
+vim.wo.relativenumber = true    -- use relative line numbers (for easier jumps)
+vim.o.scrolloff = 1
+vim.o.colorcolumn = "80"
+vim.wo.signcolumn = 'yes'       -- Keep signcolumn on by default
+vim.o.termguicolors = true      -- NOTE: make sure your terminal supports this
+vim.o.updatetime = 250          -- Faster update time
 
--- Make line numbers default
-vim.wo.number = true
-
--- Enable mouse mode
-vim.o.mouse = 'a'
-
--- Sync clipboard between OS and Neovim.
---  Remove this option if you want your OS clipboard to remain independent.
---  See `:help 'clipboard'`
-vim.o.clipboard = 'unnamedplus'
-
--- Enable break indent
-vim.o.breakindent = true
-
--- Save undo history
+-- SWAP FILE MADNESS
+vim.o.swapfile = false
+vim.o.backup = false
 vim.o.undofile = true
 
--- Case-insensitive searching UNLESS \C or capital in search
-vim.o.ignorecase = true
-vim.o.smartcase = true
-
--- Keep signcolumn on by default
-vim.wo.signcolumn = 'yes'
-
--- Decrease update time
-vim.o.updatetime = 250
-vim.o.timeoutlen = 300
-
--- Set completeopt to have a better completion experience
-vim.o.completeopt = 'menuone,noselect'
-
--- NOTE: You should make sure your terminal supports this
-vim.o.termguicolors = true
+-- EDITOR USABILITY TOGGLES
+vim.o.completeopt = 'menuone,noselect' -- better completion experience
+-- vim.o.clipboard = 'unnamedplus' -- Sync OS & nvim clipboard `:help 'clipboard'`
+vim.o.mouse = 'a'               -- Enable mouse mode
+vim.o.hlsearch = false          -- Set highlight on search
+vim.o.breakindent = true        -- Enable break indent
+vim.o.timeoutlen = 300          -- ms wait time for mapped sequence to complete
+vim.o.ignorecase = true         -- search: case insensitive
+vim.o.smartcase = true          -- search: use case when Captial in search
 
 -- [[ Basic Keymaps ]]
 
 -- Keymaps for better default experience
 -- See `:help vim.keymap.set()`
-vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
+vim.keymap.set('n', '<leader>vrc', '<cmd>source $MYVIMRC<CR>') -- reload config
 
 -- Remap for dealing with word wrap
 vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
+
+-- selctions
+vim.keymap.set('v', '<C-y>', '"+y<CR>', { desc = 'yank to system clipboard'})
+vim.keymap.set('n', 'vv', '0v$', { desc = 'visual select line'})
+vim.keymap.set('n', 'n', "nzz", { desc = 'next search result (and center)'})
+vim.keymap.set('n', 'N', "Nzz", { desc = 'previous search result (and center)'})
+-- moving text
+vim.keymap.set('v', 'J', "<cmd>m '>+1<CR>gv=gv", { desc = 'move visual line down'})
+vim.keymap.set('v', 'K', "<cmd>m '<-2<CR>gv=gv", { desc = 'move visual line up'})
+vim.keymap.set('v', '>', ">gv", { desc = 'outdent visual line'})
+vim.keymap.set('v', '<', "<gv", { desc = 'indent visual line'})
+vim.keymap.set('n', 'J', 'mzJ`z', { desc = 'smart line collapse'})
+
+-- wrap words
+vim.keymap.set('n', '<leader>"', 'ciW""<esc>P', { desc = 'wrap word in double quotes'})
+vim.keymap.set('n', "<leader>'", "ciW''<esc>P", { desc = 'wrap word in single quotes'})
+vim.keymap.set('n', '<leader>(', 'ciW()<esc>P', { desc = 'wrap word in parantheses'})
+vim.keymap.set('n', '<leader><', 'ciW<><esc>P', { desc = 'wrap word in angle brackets'})
+vim.keymap.set('n', '<leader>[', 'ciW[]<esc>P', { desc = 'wrap word in square brackets'})
+vim.keymap.set('n', '<leader>{', 'ciW{}<esc>P', { desc = 'wrap word in curly braces'})
+vim.keymap.set('n', '<leader>`', 'ciW``<esc>P', { desc = 'wrap word in backticks'})
+vim.keymap.set('n', '<leader>_', 'ciW__<esc>P', { desc = 'wrap word in underscores'})
+
+-- LEAVING OFF HERE
+-- from old config @ 'relative moves into jump list'
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
 local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
 vim.api.nvim_create_autocmd('TextYankPost', {
   callback = function()
-    vim.highlight.on_yank()
+    vim.highlight.on_yank({ timeout=500 })
   end,
   group = highlight_group,
   pattern = '*',
 })
+
+--           _           _                   
+--          (_)         | |                  
+-- __      ___ _ __   __| | _____      _____ 
+-- \ \ /\ / / | '_ \ / _` |/ _ \ \ /\ / / __|
+--  \ V  V /| | | | | (_| | (_) \ V  V /\__ \
+--   \_/\_/ |_|_| |_|\__,_|\___/ \_/\_/ |___/
+--  (RESIZING / SPLITS & WINDOW MANAGEMENT)  
+vim.keymap.set({ 'n', 'i' }, '<C-Up>', function () vim.cmd("resize +1") end, { expr = true, silent = true, desc = 'GROW window horizontally'})
+vim.keymap.set({ 'n', 'i' }, '<C-Down>', function () vim.cmd("resize -1") end, { expr = true, silent = true, desc = 'shrink window horizontally' })
+vim.keymap.set({ 'n', 'i' }, '<C-Right>', function () vim.cmd("vert resize +2") end, { expr = true, silent = true, desc = 'GROW window vertically' })
+vim.keymap.set({ 'n', 'i' }, '<C-Left>', function () vim.cmd("vert resize -2") end, { expr = true, silent = true, desc = 'shrink window horizontally' })
+-- fast move focus (normal and insert modes)
+vim.keymap.set({ 'n', 'i' }, '<C-h>', '<esc><C-w>h', { desc = 'Focus window to the LEFT'})
+vim.keymap.set({ 'n', 'i' }, '<C-j>', '<esc><C-w>j', { desc = 'Focus window DOWN'})
+vim.keymap.set({ 'n', 'i' }, '<C-k>', '<esc><C-w>k', { desc = 'Focus window UP'})
+vim.keymap.set({ 'n', 'i' }, '<C-l>', '<esc><C-w>l', { desc = 'Focus window to the RIGHT'})
+vim.keymap.set('n', '<Left>', '<cmd>bp<CR>', { desc = 'Go to previous buffer'})
+vim.keymap.set('n', '<Right>', '<cmd>bn<CR>', { desc = 'Go to next buffer'})
 
 -- [[ Configure Telescope ]]
 -- See `:help telescope` and `:help telescope.setup()`
@@ -293,7 +328,7 @@ pcall(require('telescope').load_extension, 'fzf')
 
 -- See `:help telescope.builtin`
 vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
-vim.keymap.set('n', '<leader><space>', require('telescope.builtin').buffers, { desc = '[ ] Find existing buffers' })
+vim.keymap.set('n', '<leader>b', require('telescope.builtin').buffers, { desc = '[ ] Find existing buffers' })
 vim.keymap.set('n', '<leader>/', function()
   -- You can pass additional configuration to telescope to change theme, layout, etc.
   require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
@@ -308,12 +343,16 @@ vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc
 vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { desc = '[S]earch current [W]ord' })
 vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
+vim.keymap.set('n', '<leader>sk', require('telescope.builtin').keymaps, { desc = '[S]earch [K]eymaps' })
 
 -- [[ Configure Treesitter ]]
 -- See `:help nvim-treesitter`
 require('nvim-treesitter.configs').setup {
   -- Add languages to be installed here that you want installed for treesitter
+  modules = {},
   ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'typescript', 'vimdoc', 'vim' },
+  sync_install = true,
+  ignore_install = { },
 
   -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
   auto_install = false,
