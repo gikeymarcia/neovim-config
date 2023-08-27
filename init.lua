@@ -301,7 +301,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 vim.keymap.set({ 'n', 'i' }, '<C-Up>', function () vim.cmd("resize +1") end, { expr = true, silent = true, desc = 'GROW window horizontally'})
 vim.keymap.set({ 'n', 'i' }, '<C-Down>', function () vim.cmd("resize -1") end, { expr = true, silent = true, desc = 'shrink window horizontally' })
 vim.keymap.set({ 'n', 'i' }, '<C-Right>', function () vim.cmd("vert resize +2") end, { expr = true, silent = true, desc = 'GROW window vertically' })
-vim.keymap.set({ 'n', 'i' }, '<C-Left>', function () vim.cmd("vert resize -2") end, { expr = true, silent = true, desc = 'shrink window horizontally' })
+vim.keymap.set({ 'n', 'i' }, '<C-Left>', function () vim.cmd("vert resize -2") end, { expr = true, silent = true, desc = 'shrink window vertically' })
 -- fast move focus (normal and insert modes)
 vim.keymap.set({ 'n', 'i' }, '<C-h>', '<esc><C-w>h', { desc = 'Focus window to the LEFT'})
 vim.keymap.set({ 'n', 'i' }, '<C-j>', '<esc><C-w>j', { desc = 'Focus window DOWN'})
