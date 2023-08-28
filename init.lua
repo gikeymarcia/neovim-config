@@ -249,7 +249,7 @@ vim.o.smartcase = true          -- search: use case when Captial in search
 
 -- Keymaps for better default experience
 -- See `:help vim.keymap.set()`
-vim.keymap.set('n', '<leader>vrc', '<cmd>source $MYVIMRC<CR>') -- reload config
+vim.keymap.set('n', '<leader>vrc', '<cmd>source $MYVIMRC<CR>', { desc = "Reload $MYVIMRC"})
 
 -- Remap for dealing with word wrap
 vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
@@ -476,7 +476,7 @@ end
 local servers = {
   -- clangd = {},
   -- gopls = {},
-  -- pyright = {},
+  pyright = {},
   -- rust_analyzer = {},
   -- tsserver = {},
   -- html = { filetypes = { 'html', 'twig', 'hbs'} },
