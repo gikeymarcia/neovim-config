@@ -144,12 +144,13 @@ require('lazy').setup({
     -- Set lualine as statusline
     'nvim-lualine/lualine.nvim',
     -- See `:help lualine.txt`
+    -- TODO update mechanism for downloading and installing nerd fonts
     opts = {
       options = {
-        icons_enabled = false,
+        icons_enabled = true,
         theme = 'onedark',
         component_separators = '|',
-        section_separators = '',
+        -- section_separators = '',
       },
     },
   },
@@ -224,7 +225,7 @@ require('lazy').setup({
 -- DISPLAY SETTINGS
 vim.wo.number = true            -- show line numbers
 vim.wo.relativenumber = true    -- use relative line numbers (for easier jumps)
-vim.o.scrolloff = 1
+vim.o.scrolloff = 2
 vim.o.colorcolumn = "80"
 vim.wo.signcolumn = 'yes'       -- Keep signcolumn on by default
 vim.o.termguicolors = true      -- NOTE: make sure your terminal supports this
@@ -339,6 +340,7 @@ end, { desc = '[/] Fuzzily search in current buffer' })
 
 vim.keymap.set('n', '<leader>gf', require('telescope.builtin').git_files, { desc = 'Search [G]it [F]iles' })
 vim.keymap.set('n', '<leader>sf', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
+vim.keymap.set('n', '<leader>p', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
 vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc = '[S]earch [H]elp' })
 vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { desc = '[S]earch current [W]ord' })
 vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
