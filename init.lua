@@ -106,6 +106,10 @@ require('lazy').setup({
 
       -- Adds a number of user-friendly snippets
       'rafamadriz/friendly-snippets',
+
+      -- completions based on file path
+      'hrsh7th/cmp-path',
+      -- TODO lspkind: https://github.com/onsails/lspkind.nvim
     },
   },
 
@@ -561,6 +565,7 @@ cmp.setup {
   sources = {
     { name = 'nvim_lsp' },
     { name = 'luasnip' },
+    { name = 'path' },
   },
 }
 
