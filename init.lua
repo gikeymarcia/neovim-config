@@ -229,6 +229,7 @@ require('lazy').setup({
 -- DISPLAY SETTINGS
 vim.wo.number = true            -- show line numbers
 vim.wo.relativenumber = true    -- use relative line numbers (for easier jumps)
+vim.o.hlsearch = true           -- Highlight search results
 vim.o.scrolloff = 2
 vim.o.colorcolumn = "80"
 vim.wo.signcolumn = 'yes'       -- Keep signcolumn on by default
@@ -255,6 +256,10 @@ vim.o.smartcase = true          -- search: use case when Captial in search
 -- Keymaps for better default experience
 -- See `:help vim.keymap.set()`
 vim.keymap.set('n', '<leader>vrc', '<cmd>source $MYVIMRC<CR>', { desc = "Reload $MYVIMRC"})
+vim.keymap.set('n', '<leader>j', '<cmd>cnext<CR>zz', { desc = 'next item in the quick fix list'})
+vim.keymap.set('n', '<leader>k', '<cmd>cprev<CR>zz', { desc = 'prev item in the quick fix list'})
+vim.keymap.set('n', '<F7>', '<cmd>set spell!<CR>', { desc = "Toggle spellcheck"})
+vim.keymap.set('n', '<F1>', '<cmd>set hlsearch!<CR>', { desc = "Toggle highlight search"})
 
 -- Remap for dealing with word wrap
 vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
