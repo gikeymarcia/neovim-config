@@ -282,6 +282,9 @@ vim.keymap.set('n', '<leader>{', 'ciW{}<esc>P', { desc = 'wrap word in curly bra
 vim.keymap.set('n', '<leader>`', 'ciW``<esc>P', { desc = 'wrap word in backticks'})
 vim.keymap.set('n', '<leader>_', 'ciW__<esc>P', { desc = 'wrap word in underscores'})
 
+-- insert mode
+vim.keymap.set('i', '<C-v>', '<C-r>*', { desc = 'Paste from clipboard'})
+
 -- LEAVING OFF HERE
 -- from old config @ 'relative moves into jump list'
 
