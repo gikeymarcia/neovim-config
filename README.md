@@ -11,6 +11,24 @@ I've primarily crafted this experience for writing/editing
 - Python IDE development environment 
 - Lightning fast editing of system configuration files
 
+### Supports
+
+- Latest Neovim v0.9.1
+- Linux and MacOS
+
+### Requirements
+
+- `ripgrep` for nvim-telescope
+- `pandoc` and `entr` for markdown previewing features
+
+## Features
+
+- `<space>m` in a markdown file to open an HTML preview in your $BROWSER.
+  Preview will re-generate each time you save the file.
+
+
+## About this Project
+
 I've been using vim/neovim since 2019 but in 2023 decided to reboot fresh and 
 throw out my `init.vim` and move to an entirely lua-based configuration. To 
 begin I forked the amazing [kickstart.nvim][Kickstart] project and brought in
@@ -19,11 +37,6 @@ the aspects of my previous config as I found them helpful.
 This is a living project. Every day I work and look for ways to sharpen my knife.
 If you should find yourself in this config try `<space>?` to search through my 
 keymaps.
-
-### Supports
-
-- latest neovim v0.9.1
-- Linux and MacOS
 
 [kickstart]: <https://github.com/nvim-lua/kickstart.nvim>
 "nvim-lua/kickstart on GitHub"
