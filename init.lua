@@ -251,7 +251,6 @@ vim.o.undofile = true
 vim.o.completeopt = 'menuone,noselect' -- better completion experience
 -- vim.o.clipboard = 'unnamedplus' -- Sync OS & nvim clipboard `:help 'clipboard'`
 vim.o.mouse = 'a'               -- Enable mouse mode
-vim.o.hlsearch = false          -- Set highlight on search
 vim.o.breakindent = true        -- Enable break indent
 vim.o.timeoutlen = 300          -- ms wait time for mapped sequence to complete
 vim.o.ignorecase = true         -- search: case insensitive
@@ -267,7 +266,6 @@ vim.keymap.set('n', '<leader>k', '<cmd>cprev<CR>zz', { desc = 'prev item in the 
 vim.keymap.set('n', '<leader>m', '<cmd>!~/.config/nvim/scripts/pandoc/markdown-watch.sh "%" &<CR><CR>',
   { silent = true, desc = 'Live preview edits of markdown documents in $BROWSER'})
 vim.keymap.set('n', '<F7>', '<cmd>set spell!<CR>', { desc = "Toggle spellcheck"})
-vim.keymap.set('n', '<F1>', '<cmd>set hlsearch!<CR>', { desc = "Toggle highlight search"})
 vim.keymap.set('n', '<leader><leader>', '<cmd>set hlsearch!<CR>', { desc = "Toggle highlight search"})
 
 -- Remap for dealing with word wrap
@@ -320,10 +318,11 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 --  \ V  V /| | | | | (_| | (_) \ V  V /\__ \
 --   \_/\_/ |_|_| |_|\__,_|\___/ \_/\_/ |___/
 --  (RESIZING / SPLITS & WINDOW MANAGEMENT)  
-vim.keymap.set({ 'n', 'i' }, '<C-Up>', function () vim.cmd("resize +1") end, { expr = true, silent = true, desc = 'GROW window horizontally'})
-vim.keymap.set({ 'n', 'i' }, '<C-Down>', function () vim.cmd("resize -1") end, { expr = true, silent = true, desc = 'shrink window horizontally' })
-vim.keymap.set({ 'n', 'i' }, '<C-Right>', function () vim.cmd("vert resize +2") end, { expr = true, silent = true, desc = 'GROW window vertically' })
-vim.keymap.set({ 'n', 'i' }, '<C-Left>', function () vim.cmd("vert resize -2") end, { expr = true, silent = true, desc = 'shrink window vertically' })
+vim.keymap.set({ 'n', 'i' }, '<C-q>', "<esc><C-w>c", { desc = 'Close focused window' })
+vim.keymap.set({ 'n', 'i' }, '<C-Up>', "<cmd>resize +1<CR>", { desc = 'GROW window vertically'})
+vim.keymap.set({ 'n', 'i' }, '<C-Down>', "<cmd>resize -1<CR>", { desc = 'shrink window vertically' })
+vim.keymap.set({ 'n', 'i' }, '<C-Right>', "<cmd>vert resize +2<CR>", { desc = 'GROW window horizontally' })
+vim.keymap.set({ 'n', 'i' }, '<C-Left>', "<cmd>vert resize -2<CR>", { desc = 'shrink window horizontally' })
 -- fast move focus (normal and insert modes)
 vim.keymap.set({ 'n', 'i' }, '<C-h>', '<esc><C-w>h', { desc = 'Focus window to the LEFT'})
 vim.keymap.set({ 'n', 'i' }, '<C-j>', '<esc><C-w>j', { desc = 'Focus window DOWN'})
@@ -472,7 +471,7 @@ local on_attach = function(_, bufnr)
 
   -- See `:help K` for why this keymap
   nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
-  nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
+  nmap('<C-s>', vim.lsp.buf.signature_help, 'Signature Documentation')
 
   -- Lesser used LSP functionality
   nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
