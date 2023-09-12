@@ -263,7 +263,7 @@ vim.o.smartcase = true          -- search: use case when Captial in search
 vim.keymap.set('n', '<leader>vrc', '<cmd>source $MYVIMRC<CR>', { desc = "Reload $MYVIMRC"})
 vim.keymap.set('n', '<leader>j', '<cmd>cnext<CR>zz', { desc = 'next item in the quick fix list'})
 vim.keymap.set('n', '<leader>k', '<cmd>cprev<CR>zz', { desc = 'prev item in the quick fix list'})
-vim.keymap.set('n', '<leader>m', '<cmd>!~/.config/nvim/scripts/pandoc/markdown-watch.sh "%" &<CR><CR>',
+vim.keymap.set('n', '<leader>m', '<cmd>w<CR><cmd>!~/.config/nvim/scripts/pandoc/markdown-watch.sh "%" &<CR><CR>',
   { silent = true, desc = 'Live preview edits of markdown documents in $BROWSER'})
 vim.keymap.set('n', '<F7>', '<cmd>set spell!<CR>', { desc = "Toggle spellcheck"})
 vim.keymap.set('n', '<leader><leader>', '<cmd>set hlsearch!<CR>', { desc = "Toggle highlight search"})

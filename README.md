@@ -13,7 +13,7 @@ I've primarily crafted this experience for writing/editing
 
 ### Supports
 
-- Latest Neovim v0.9.1
+- Neovim v0.9+
 - Linux and MacOS
 
 ### Requirements
@@ -25,7 +25,7 @@ I've primarily crafted this experience for writing/editing
 
 - `<space>m` in a markdown file to open an HTML preview in your $BROWSER.
   Preview will re-generate each time you save the file.
-
+- `C-[hjkl]` to change between splits.
 
 ## About this Project
 
