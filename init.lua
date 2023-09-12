@@ -137,11 +137,16 @@ require('lazy').setup({
 
   {
     -- Theme inspired by Atom
+    -- https://github.com/navarasu/onedark.nvim
     'navarasu/onedark.nvim',
     priority = 1000,
-    config = function()
-      vim.cmd.colorscheme 'onedark'
-    end,
+    opts = {
+      -- Choices: 'dark' (default), 'darker', 'cool', 'deep', 'warm', 'warmer' and 'light'
+      style = 'warmer',
+    },
+    -- config = function()
+    --   vim.cmd.colorscheme 'onedark'
+    -- end,
   },
 
   {
@@ -227,6 +232,7 @@ require('lazy').setup({
 -- See `:help vim.o` `:help option-summary`
 
 -- DISPLAY SETTINGS
+vim.cmd.colorscheme 'onedark'
 vim.wo.number = true            -- show line numbers
 vim.wo.relativenumber = true    -- use relative line numbers (for easier jumps)
 vim.o.hlsearch = true           -- Highlight search results
