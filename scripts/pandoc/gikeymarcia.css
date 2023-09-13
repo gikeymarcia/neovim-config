@@ -670,6 +670,7 @@ code span.fu { color: #d1dddb }
 code span.st { color: #dfc86b } /* strings */
 code span.fl { color: #53b039 } /* floats */
 code span.dv { color: #52ae39 } /* intergers?? dunno. */
+code span.at { color: #52ae39 } /* bash command flags? */
 code span.co { color: #58772a } /* comments */
 code span.cf { color: #27c4e8 } /* control flow? if else */
 code span.va { color: #6dac51 }
