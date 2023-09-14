@@ -68,7 +68,11 @@ require('lazy').setup({
   -- NOTE: First, some plugins that don't require any configuration
 
   -- Git related plugins
-  'tpope/vim-fugitive',
+  { 'tpope/vim-fugitive',
+    keys = {
+      { "<leader>G", "<cmd>G<cr>", 'n', desc = "Launch vim fugitive" },
+    },
+  },
   'tpope/vim-rhubarb',
 
   -- Detect tabstop and shiftwidth automatically
