@@ -69,6 +69,7 @@ require('lazy').setup({
 
   -- Git related plugins
   { 'tpope/vim-fugitive',
+    lazy = false,
     keys = {
       { "<leader>G", "<cmd>G<cr>", 'n', desc = "Launch vim fugitive" },
     },
