@@ -1,5 +1,7 @@
 # Neovim Configuration
 
+![][screenshot]
+
 Welcome to my neovim [Personalized Development Environment][PDE]. Primarily
 this config is designed to help me be a fast, productive, and efficient creator
 and manipulator of text in all the ways it intersects with a
@@ -17,16 +19,35 @@ writing/editing
 - Neovim v0.9+
 - Linux and MacOS
 
+## Installation
+
+### Quickstart
+
+```bash
+git clone https://github.com/gikeymarcia/neovim-config.git ~/.config/nvim
+nvim  # plugins should automatically install
+```
+
 ### Requirements
 
 - `ripgrep` for nvim-telescope
 - `pandoc` and `entr` for markdown previewing features
+
+#### Linters
+
+- `yamllint` for yaml/ansible
+- `shellcheck` for Bash scripting
+
+From within nvim you can run `:Mason` to pick language servers to install. You
+can manage (install/remove/update) plugins with `:Lazy`
 
 ## Useful keymaps
 
 | keymap     | mode | action                                     |
 | ------     | ---- | ------                                     |
 | `<space>m` | n    | Open HTML preview of .md in $BROWSER       |
+| `<F4>`     | n    | Toggle [nvim-tree][nvimtree] file browser  |
+| `<F5>`     | n    | Toggle [undo-tree][undotree]               |
 | `C-[hjkl]` | n,i  | Switch to different split (vim-directions) |
 | `<C-q>`    | n    | Close active window/split                  |
 | `gaap`     | n    | Launch [easy-align][] around current table |
@@ -48,3 +69,9 @@ keymaps.
 "PDE: A different take on editing code"
 [easy-align]: <https://github.com/junegunn/vim-easy-align#usage>
 "vim-easy-align"
+[undotree]: <https://github.com/mbbill/undotree>
+"undotree by mbbill@GitHub"
+[nvimtree]: <https://github.com/nvim-tree/nvim-tree.lua>
+"nvim-tree.lua: A File Explorer for Nvim"
+[screenshot]: <./screenshot.png>
+"A view of this config working on editing this project." 
