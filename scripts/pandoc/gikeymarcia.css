@@ -474,9 +474,7 @@ body>*:last-child {
 }
 @media screen {
   body {
-    /* box-shadow:0 0 0 1px #cacaca,0 0 0 4px #eee */
-    /* box-shadow: 12px 12px 2px 1px rgba(0, 0, 255, .2) */
-    box-shadow: 12px 12px 2px 1px rgba(183, 81, 81, 0.2);
+    box-shadow: 12px 12px 2px 1px rgba(24, 32, 41, 0.62);
     border: solid #7b7878
   }
 }
