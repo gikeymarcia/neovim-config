@@ -114,6 +114,8 @@ require('lazy').setup({
 
       -- completions based on file path
       'hrsh7th/cmp-path',
+      -- completions based on buffer words
+      'hrsh7th/cmp-buffer',
       -- TODO lspkind: https://github.com/onsails/lspkind.nvim
     },
   },
@@ -598,6 +600,15 @@ cmp.setup {
     { name = 'nvim_lsp' },
     { name = 'luasnip' },
     { name = 'path' },
+    {
+      name = 'buffer',
+      option = {
+        keyword_length = 2,
+        get_bufnrs = function ()
+          return vim.api.nvim_list_bufs()
+        end
+      }
+    },
   },
 }
 
