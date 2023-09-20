@@ -8,6 +8,5 @@ return {
   'junegunn/vim-easy-align',
   keys = {
     { "ga", "<Plug>(EasyAlign)", "n,x,v", desc = 'Use vim-easy-align plugin' },
-    -- { "<leader>ga", "gaap*", "n,x,v", desc = 'Auto-align table' },
   },
 }

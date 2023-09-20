@@ -6,7 +6,11 @@ return {
   -- configuration details
   opts = {
     window = {
-      width = .85
+      width = 120,
+      options = {
+        number = false,
+        relativenumber = false
+      },
     },
   },
 }
