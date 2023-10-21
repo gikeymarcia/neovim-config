@@ -287,6 +287,19 @@ vim.keymap.set('n', '<leader><leader>', '<cmd>set hlsearch!<CR>', { desc = "Togg
 vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 
+-- Put relative moves into jumplist (Thanks ChatGPT 4 vimscript port)
+HANDLE_JUMP = function(key)
+    local count = vim.v.count1
+    if count > 5 then
+        return string.format("m'%s%s", count, key)
+    else
+        return key
+    end
+end
+vim.api.nvim_set_keymap('n', 'k', [[v:lua.HANDLE_JUMP('k')]], {expr = true, noremap = true})
+vim.api.nvim_set_keymap('n', 'j', [[v:lua.HANDLE_JUMP('j')]], {expr = true, noremap = true})
+
+
 -- selctions
 vim.keymap.set('v', '<C-y>', '"+y<CR>', { desc = 'yank to system clipboard'})
 vim.keymap.set('n', 'vv', '0v$', { desc = 'visual select line'})
