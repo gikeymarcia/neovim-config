@@ -17,6 +17,5 @@ return {
           percentage = 0.05, -- percentage of the shade to apply to the inactive window
       },
     }
-    -- this is supposed to be an italics comment
   }
 }

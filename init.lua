@@ -171,7 +171,6 @@ require('lazy').setup({
     -- Set lualine as statusline
     'nvim-lualine/lualine.nvim',
     -- See `:help lualine.txt`
-    -- TODO update mechanism for downloading and installing nerd fonts
     opts = {
       options = {
         icons_enabled = true,
@@ -326,8 +325,8 @@ vim.keymap.set('n', '<leader>_', 'ciW__<esc>P', { desc = 'wrap word in underscor
 -- insert mode
 vim.keymap.set('i', '<C-v>', '<esc><cmd>set paste<cr>a<C-r>*<esc><cmd>set paste!<cr>a', { desc = 'Paste from clipboard (with paste mode)'})
 
--- LEAVING OFF HERE
--- from old config @ 'relative moves into jump list'
+-- IMPORT INCOMPLETE
+-- Stopped after 'relative moves into jump list'. Need to check further
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
@@ -389,7 +388,6 @@ end, { desc = '[/] Fuzzily search in current buffer' })
 
 vim.keymap.set('n', '<leader>gf', require('telescope.builtin').git_files, { desc = 'Search [G]it [F]iles' })
 vim.keymap.set('n', '<leader>sf', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
--- vim.keymap.set('n', '<leader>p', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
 vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc = '[S]earch [H]elp' })
 vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { desc = '[S]earch current [W]ord' })
 vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
