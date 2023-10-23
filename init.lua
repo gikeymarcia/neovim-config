@@ -116,7 +116,8 @@ require('lazy').setup({
       'hrsh7th/cmp-path',
       -- completions based on buffer words
       'hrsh7th/cmp-buffer',
-      -- TODO lspkind: https://github.com/onsails/lspkind.nvim
+      -- lspkind: https://github.com/onsails/lspkind.nvim
+      'onsails/lspkind.nvim',
     },
   },
 
@@ -571,10 +572,18 @@ mason_lspconfig.setup_handlers {
 -- See `:help cmp`
 local cmp = require 'cmp'
 local luasnip = require 'luasnip'
+local lspkind = require 'lspkind'
 require('luasnip.loaders.from_vscode').lazy_load()
 luasnip.config.setup {}
 
 cmp.setup {
+  formatting = {
+    format = lspkind.cmp_format({
+      mode = 'symbol',
+      maxwidth = 50,
+    ellipsis_char = '...',
+    }),
+  },
   snippet = {
     expand = function(args)
       luasnip.lsp_expand(args.body)
