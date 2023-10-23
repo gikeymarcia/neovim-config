@@ -4,9 +4,15 @@
 -- To line up around the | divider use
 --    gaap*|
 -- READ MORE @ https://github.com/junegunn/vim-easy-align#usage
+
+-- Keymaps for EasyAlign
+vim.api.nvim_set_keymap('x', 'ga', [[<Plug>(EasyAlign)]], { noremap = false })
+vim.api.nvim_set_keymap('n', 'ga', [[<Plug>(EasyAlign)]], { noremap = false })
+
 return {
   'junegunn/vim-easy-align',
-  keys = {
-    { "ga", "<Plug>(EasyAlign)", "n,x,v", desc = 'Use vim-easy-align plugin' },
-  },
+  lazy = false,
+  -- keys = {
+  --   { "ga", "<Plug>(EasyAlign)", "n,x,v", desc = 'Use vim-easy-align plugin' },
+  -- },
 }
