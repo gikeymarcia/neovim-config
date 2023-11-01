@@ -11,8 +11,4 @@ vim.api.nvim_set_keymap('n', 'ga', [[<Plug>(EasyAlign)]], { noremap = false })
 
 return {
   'junegunn/vim-easy-align',
-  lazy = false,
-  -- keys = {
-  --   { "ga", "<Plug>(EasyAlign)", "n,x,v", desc = 'Use vim-easy-align plugin' },
-  -- },
 }
