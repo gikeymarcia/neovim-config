@@ -161,7 +161,7 @@ require('lazy').setup({
     priority = 1000,
     opts = {
       -- Choices: 'dark' (default), 'darker', 'cool', 'deep', 'warm', 'warmer' and 'light'
-      style = 'warmer',
+      style = 'darker',
     },
     -- config = function()
     --   vim.cmd.colorscheme 'onedark'

@@ -32,6 +32,7 @@ nvim  # plugins should automatically install
 
 - `ripgrep` for nvim-telescope
 - `pandoc` and `entr` for markdown previewing features
+- [nerdfonts][nerdfonts] installed (checkout my [ansible role][nf-ansible])
 
 #### Linters
 
@@ -75,3 +76,7 @@ keymaps.
 "nvim-tree.lua: A File Explorer for Nvim"
 [screenshot]: <./screenshot.png>
 "A view of this config working on editing this project." 
+[nerdfonts]: <https://www.nerdfonts.com/>
+"Iconic font aggregator, collection, and patcher"
+[nf-ansible]: <https://github.com/gikeymarcia/ansible-role-nerdfonts>
+"Ansible role to install nerdfonts into system"
