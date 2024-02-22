@@ -681,6 +681,11 @@ pre>code {
   border:0;
   background:transparent
 }
+.sourceCode {
+  overflow-x:auto;
+  overflow-y:hidden;
+  white-space:nowrap;
+}
 .highlight pre {
   background-color:#f8f8f8;
   border:1px solid #ccc;
