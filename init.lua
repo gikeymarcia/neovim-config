@@ -76,6 +76,9 @@ require('lazy').setup({
   },
   'tpope/vim-rhubarb',
 
+  -- Detect trailing whitespace
+  'ntpeters/vim-better-whitespace',
+
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
 
