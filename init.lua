@@ -243,10 +243,10 @@ require('lazy').setup({
 }, {})
 
 -- [[ Setting options ]]
---     _       _ __    __           
+--     _       _ __    __
 --    (_)___  (_) /_  / /_  ______ _
 --   / / __ \/ / __/ / / / / / __ `/
---  / / / / / / /__ / / /_/ / /_/ / 
+--  / / / / / / /__ / / /_/ / /_/ /
 -- /_/_/ /_/_/\__(_)_/\__,_/\__,_/  (init.lua settings)
 -- See `:help vim.o` `:help option-summary`
 
@@ -343,13 +343,13 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   pattern = '*',
 })
 
---           _           _                   
---          (_)         | |                  
--- __      ___ _ __   __| | _____      _____ 
+--           _           _
+--          (_)         | |
+-- __      ___ _ __   __| | _____      _____
 -- \ \ /\ / / | '_ \ / _` |/ _ \ \ /\ / / __|
 --  \ V  V /| | | | | (_| | (_) \ V  V /\__ \
 --   \_/\_/ |_|_| |_|\__,_|\___/ \_/\_/ |___/
---  (RESIZING / SPLITS & WINDOW MANAGEMENT)  
+--  (RESIZING / SPLITS & WINDOW MANAGEMENT)
 vim.keymap.set({ 'n', 'i' }, '<C-q>', "<esc><C-w>c", { desc = 'Close focused window' })
 vim.keymap.set({ 'n', 'i' }, '<C-Up>', "<cmd>resize +1<CR>", { desc = 'GROW window vertically'})
 vim.keymap.set({ 'n', 'i' }, '<C-Down>', "<cmd>resize -1<CR>", { desc = 'shrink window vertically' })
