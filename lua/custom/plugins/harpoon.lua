@@ -34,7 +34,7 @@ return {
     vim.keymap.set("n", "<leader>ht", function() toggle_telescope(harpoon:list()) end, { desc = "Open harpoon window" })
     vim.keymap.set("n", "<leader>hl", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end, {desc = "Harpoon list quick menu"})
 
-    vim.keymap.set("n", "<leader>A", function() harpoon:list():add() end, {desc = "Harpoon add file"})
+    vim.keymap.set("n", "<leader>ha", function() harpoon:list():add() end, {desc = "Harpoon add file"})
     vim.keymap.set("n", "<leader>H", function() harpoon:list():select(1) end, {desc = "Harpoon buffer 1"})
     vim.keymap.set("n", "<leader>J", function() harpoon:list():select(2) end, {desc = "Harpoon buffer 2"})
     vim.keymap.set("n", "<leader>K", function() harpoon:list():select(3) end, {desc = "Harpoon buffer 3"})
