@@ -174,6 +174,7 @@ require('lazy').setup({
   {
     -- Set lualine as statusline
     'nvim-lualine/lualine.nvim',
+    dependencies = { "nvim-tree/nvim-web-devicons" },
     -- See `:help lualine.txt`
     opts = {
       options = {
@@ -574,7 +575,7 @@ mason_lspconfig.setup_handlers {
 -- See `:help cmp`
 local cmp = require 'cmp'
 local luasnip = require 'luasnip'
-local lspkind = require 'lspkind'
+local lspkind = require('lspkind')
 require('luasnip.loaders.from_vscode').lazy_load()
 luasnip.config.setup {}
 
@@ -582,8 +583,15 @@ cmp.setup {
   formatting = {
     format = lspkind.cmp_format({
       mode = 'symbol',
-      maxwidth = 50,
+      maxwidth = {
+        -- prevent the popup from showing more than provided characters (e.g 50 will not show more than 50 characters)
+        -- can also be a function to dynamically calculate max width such as
+        -- menu = function() return math.floor(0.45 * vim.o.columns) end,
+        menu = 50, -- leading text (labelDetails)
+        abbr = 50, -- actual suggestion item
+      },
     ellipsis_char = '...',
+    show_labelDetails = true, -- show labelDetails in menu. Disabled by default
     }),
   },
   snippet = {
