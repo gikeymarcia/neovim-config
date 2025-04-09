@@ -164,7 +164,7 @@ require('lazy').setup({
     priority = 1000,
     opts = {
       -- Choices: 'dark' (default), 'darker', 'cool', 'deep', 'warm', 'warmer' and 'light'
-      style = 'darker',
+      style = 'warm',
     },
     -- config = function()
     --   vim.cmd.colorscheme 'onedark'
@@ -261,6 +261,12 @@ vim.o.colorcolumn = "80"
 vim.wo.signcolumn = 'yes'       -- Keep signcolumn on by default
 vim.o.termguicolors = true      -- NOTE: make sure your terminal supports this
 vim.o.updatetime = 250          -- Faster update time
+vim.opt.cursorline = true       -- Show which line your cursor is on
+-- Sets how neovim will display certain whitespace characters in the editor.
+vim.opt.list = true             --  See `:help 'list'` and `:help 'listchars'`
+vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
+-- Preview substitutions live, as you type!
+vim.opt.inccommand = 'split'
 
 -- SWAP FILE MADNESS
 vim.o.swapfile = false
@@ -275,6 +281,7 @@ vim.o.breakindent = true        -- Enable break indent
 vim.o.timeoutlen = 300          -- ms wait time for mapped sequence to complete
 vim.o.ignorecase = true         -- search: case insensitive
 vim.o.smartcase = true          -- search: use case when Captial in search
+vim.opt.confirm = true
 
 -- [[ Basic Keymaps ]]
 
