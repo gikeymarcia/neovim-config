@@ -164,11 +164,8 @@ require('lazy').setup({
     priority = 1000,
     opts = {
       -- Choices: 'dark' (default), 'darker', 'cool', 'deep', 'warm', 'warmer' and 'light'
-      style = 'warm',
+      style = 'warmer',
     },
-    -- config = function()
-    --   vim.cmd.colorscheme 'onedark'
-    -- end,
   },
 
   {
@@ -179,7 +176,7 @@ require('lazy').setup({
     opts = {
       options = {
         icons_enabled = true,
-        theme = 'onedark',
+        theme = 'tokyonight',
         component_separators = { left = '', right = ''},
         section_separators = { left = '', right = ''},
       },
@@ -252,7 +249,7 @@ require('lazy').setup({
 -- See `:help vim.o` `:help option-summary`
 
 -- DISPLAY SETTINGS
-vim.cmd.colorscheme 'onedark'
+vim.cmd.colorscheme 'nord'
 vim.wo.number = true            -- show line numbers
 vim.wo.relativenumber = true    -- use relative line numbers (for easier jumps)
 vim.o.hlsearch = true           -- Highlight search results
