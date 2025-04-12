@@ -1,4 +1,5 @@
 -- https://github.com/shaunsingh/nord.nvim
+-- beware, also hooked into bufferline.nvim
 return {
   {
     "shaunsingh/nord.nvim",
