@@ -98,6 +98,11 @@ require('lazy').setup({
 
       -- Additional lua configuration, makes nvim stuff amazing!
       'folke/neodev.nvim',
+
+      -- Allows extra capabilities provided by blink.cmp
+      -- https://cmp.saghen.dev/installation#lazy-nvim
+      'saghen/blink.cmp',
+
     },
   },
 
