@@ -264,6 +264,8 @@ vim.wo.signcolumn = 'yes'       -- Keep signcolumn on by default
 vim.o.termguicolors = true      -- NOTE: make sure your terminal supports this
 vim.o.updatetime = 250          -- Faster update time
 vim.opt.cursorline = true       -- Show which line your cursor is on
+-- Don't show the mode, since it's already in the status line
+vim.opt.showmode = false
 -- Sets how neovim will display certain whitespace characters in the editor.
 vim.opt.list = true             --  See `:help 'list'` and `:help 'listchars'`
 vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
@@ -360,6 +362,8 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 --  \ V  V /| | | | | (_| | (_) \ V  V /\__ \
 --   \_/\_/ |_|_| |_|\__,_|\___/ \_/\_/ |___/
 --  (RESIZING / SPLITS & WINDOW MANAGEMENT)
+vim.opt.splitright = false
+vim.opt.splitbelow = false
 vim.keymap.set({ 'n', 'i' }, '<C-q>', "<esc><C-w>c", { desc = 'Close focused window' })
 vim.keymap.set({ 'n', 'i' }, '<C-Up>', "<cmd>resize +1<CR>", { desc = 'GROW window vertically'})
 vim.keymap.set({ 'n', 'i' }, '<C-Down>', "<cmd>resize -1<CR>", { desc = 'shrink window vertically' })
