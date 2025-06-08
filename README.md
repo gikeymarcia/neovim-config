@@ -16,7 +16,7 @@ writing/editing
 
 ### Supports
 
-- Neovim v0.9+
+- Neovim v0.11+
 - Linux and MacOS
 
 ## Installation
@@ -44,14 +44,16 @@ can manage (install/remove/update) plugins with `:Lazy`
 
 ## Useful keymaps
 
-| keymap     | mode | action                                     |
-| ------     | ---- | ------                                     |
-| `<space>m` | n    | Open HTML preview of .md in $BROWSER       |
-| `<F4>`     | n    | Toggle [nvim-tree][nvimtree] file browser  |
-| `<F5>`     | n    | Toggle [undo-tree][undotree]               |
-| `C-[hjkl]` | n,i  | Switch to different split (vim-directions) |
-| `<C-q>`    | n    | Close active window/split                  |
-| `gaap`     | n    | Launch [easy-align][] around current table |
+| keymap      | mode | action                                     |
+| ------      | ---- | ------                                     |
+| `<space>sf` | n    | Search and switch to files in project      |
+| `<space>sg` | n    | Grep search through project                |
+| `<space>m`  | n    | Open HTML preview of .md in $BROWSER       |
+| `<F4>`      | n    | Toggle [nvim-tree][nvimtree] file browser  |
+| `<F5>`      | n    | Toggle [undo-tree][undotree]               |
+| `C-[hjkl]`  | n,i  | Switch to different split (vim-directions) |
+| `<C-q>`     | n    | Close active window/split                  |
+| `gaap`      | n    | Launch [easy-align][] around current table |
 
 ## About this Project
 
