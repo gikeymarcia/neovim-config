@@ -326,7 +326,7 @@ vim.api.nvim_set_keymap('n', 'j', [[v:lua.HANDLE_JUMP('j')]], {expr = true, nore
 
 
 -- selctions
-vim.keymap.set('v', '<C-y>', '"+y<CR>', { desc = 'yank to system clipboard'})
+vim.keymap.set('v', '<C-y>', '"+y', { desc = 'yank to system clipboard'})
 vim.keymap.set('n', 'vv', '0v$', { desc = 'visual select line'})
 vim.keymap.set('n', 'n', "nzz", { desc = 'next search result (and center)'})
 vim.keymap.set('n', 'N', "Nzz", { desc = 'previous search result (and center)'})
