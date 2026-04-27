@@ -27,7 +27,7 @@
   "nvim-colorizer.lua": { "branch": "master", "commit": "4770635b4903d849fb30a9e45ac5da5eb5c36a16" },
   "nvim-lspconfig": { "branch": "master", "commit": "ead0f5f342d8d323441e7d4b88f0fc436a81ad5f" },
   "nvim-tree.lua": { "branch": "master", "commit": "a0db8bf7d6488b1dcd9cb5b0dfd6684a1e14f769" },
-  "nvim-treesitter": { "branch": "main", "commit": "cb2cb74f3c3cbbcc17e79cada2060165d616d849" },
+  "nvim-treesitter": { "branch": "main", "commit": "4916d6592ede8c07973490d9322f187e07dfefac" },
   "nvim-treesitter-textobjects": { "branch": "main", "commit": "a0e182ae21fda68c59d1f36c9ed45600aef50311" },
   "nvim-web-devicons": { "branch": "master", "commit": "737cf6c657898d0c697311d79d361288a1343d50" },
   "onedark.nvim": { "branch": "master", "commit": "213c23ae45a04797572242568d5d51937181792d" },
