@@ -88,9 +88,10 @@ require('lazy').setup({
     -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
     dependencies = {
-      -- Automatically install LSPs to stdpath for neovim
-      { 'williamboman/mason.nvim', config = true },
-      'williamboman/mason-lspconfig.nvim',
+      -- Language servers are installed from the OS package manager via
+      -- ./install-language-servers-{Arch,MacOS}.sh and enabled with
+      -- vim.lsp.enable() below. nvim-lspconfig only ships the default server
+      -- configs that vim.lsp.config() consumes.
 
       -- Useful status updates for LSP
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
@@ -436,6 +437,17 @@ require('nvim-treesitter').setup {
 require('nvim-treesitter').install { 'bash', 'css', 'desktop', 'dockerfile', 'git_config', 'gitcommit', 'gitignore', 'hcl', 'http', 'hyprlang', 'jinja', 'jinja_inline', 'json', 'go', 'lua', 'markdown', 'markdown_inline', 'python', 'readline', 'rust', 'ssh_config', 'terraform', 'tmux', 'javascript', 'typescript', 'vimdoc', 'vim', 'yaml', 'zsh' }
 -- require('nvim-treesitter').install { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'javascript', 'typescript', 'vimdoc', 'vim' }
 
+-- The `main` branch of nvim-treesitter no longer auto-enables highlighting via
+-- a `highlight = { enable = true }` option. Start the treesitter highlighter
+-- per-buffer for any filetype that has a parser installed (pcall guards the
+-- case where a parser isn't available yet / still installing).
+vim.api.nvim_create_autocmd('FileType', {
+  group = vim.api.nvim_create_augroup('kickstart-treesitter', { clear = true }),
+  callback = function()
+    pcall(vim.treesitter.start)
+  end,
+})
+
 -- Diagnostic keymaps
 -- See :help vim.diagnostic.Opts
 vim.diagnostic.config {
@@ -469,92 +481,106 @@ vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open float
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
 
 -- [[ Configure LSP ]]
---  This function gets run when an LSP connects to a particular buffer.
-local on_attach = function(_, bufnr)
-  -- NOTE: Remember that lua is a real programming language, and as such it is possible
-  -- to define small helper and utility functions so you don't have to repeat yourself
-  -- many times.
-  --
-  -- In this case, we create a function that lets us more easily define mappings specific
-  -- for LSP related items. It sets the mode, buffer and description for us each time.
-  local nmap = function(keys, func, desc)
-    if desc then
-      desc = 'LSP: ' .. desc
+--  These keymaps get set when a language server attaches to a buffer.
+--  See `:help lsp-attach`. (Neovim 0.11+: on_attach is wired via this autocmd
+--  rather than per-server, since mason-lspconfig v2 no longer exposes
+--  setup_handlers and servers are enabled through vim.lsp.enable.)
+vim.api.nvim_create_autocmd('LspAttach', {
+  group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
+  callback = function(event)
+    local bufnr = event.buf
+    -- Helper to define buffer-local LSP mappings with a description.
+    local nmap = function(keys, func, desc)
+      if desc then
+        desc = 'LSP: ' .. desc
+      end
+      vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
     end
 
-    vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
-  end
+    nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
+    nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
 
-  nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
-  nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
+    nmap('gd', vim.lsp.buf.definition, '[G]oto [D]efinition')
+    nmap('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
+    nmap('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
+    nmap('<leader>D', vim.lsp.buf.type_definition, 'Type [D]efinition')
+    nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
+    nmap('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
 
-  nmap('gd', vim.lsp.buf.definition, '[G]oto [D]efinition')
-  nmap('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
-  nmap('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
-  nmap('<leader>D', vim.lsp.buf.type_definition, 'Type [D]efinition')
-  nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
-  nmap('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
+    -- See `:help K` for why this keymap
+    nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
+    nmap('<C-s>', vim.lsp.buf.signature_help, 'Signature Documentation')
 
-  -- See `:help K` for why this keymap
-  nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
-  nmap('<C-s>', vim.lsp.buf.signature_help, 'Signature Documentation')
+    -- Lesser used LSP functionality
+    nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
+    nmap('<leader>wa', vim.lsp.buf.add_workspace_folder, '[W]orkspace [A]dd Folder')
+    nmap('<leader>wr', vim.lsp.buf.remove_workspace_folder, '[W]orkspace [R]emove Folder')
+    nmap('<leader>wl', function()
+      print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+    end, '[W]orkspace [L]ist Folders')
 
-  -- Lesser used LSP functionality
-  nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
-  nmap('<leader>wa', vim.lsp.buf.add_workspace_folder, '[W]orkspace [A]dd Folder')
-  nmap('<leader>wr', vim.lsp.buf.remove_workspace_folder, '[W]orkspace [R]emove Folder')
-  nmap('<leader>wl', function()
-    print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-  end, '[W]orkspace [L]ist Folders')
+    -- Create a command `:Format` local to the LSP buffer
+    vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
+      vim.lsp.buf.format()
+    end, { desc = 'Format current buffer with LSP' })
+  end,
+})
 
-  -- Create a command `:Format` local to the LSP buffer
-  vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
-    vim.lsp.buf.format()
-  end, { desc = 'Format current buffer with LSP' })
-end
-
--- Enable the following language servers
---  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
+-- Enable the following language servers.
+--  Keys are lspconfig server names; values are per-server overrides that get
+--  merged onto nvim-lspconfig's shipped defaults via vim.lsp.config().
 --
---  Add any additional override configuration in the following tables. They will be passed to
---  the `settings` field of the server config. You must look up that documentation yourself.
+--  There is NO mason here. Install the binaries with the per-OS script:
+--    ./install-language-servers-Arch.sh     (pacman / AUR via yay / pipx)
+--    ./install-language-servers-MacOS.sh    (brew / pipx / npm / cargo)
+--  Each server auto-starts when its executable is found on PATH, and quietly
+--  does nothing if it isn't -- so a machine missing a server just skips it
+--  instead of erroring.
 --
---  If you want to override the default filetypes that your language server will attach to you can
---  define the property 'filetypes' to the map in question.
+--  Ecosystem per server (most are NOT npm):
+--    lua_ls                -> compiled binary (pacman / brew)
+--    terraformls           -> Go binary (pacman / brew)
+--    systemd_lsp           -> Rust binary (pacman on Arch; `cargo install systemd-lsp` elsewhere)
+--    nginx_language_server -> Python (pipx)
+--    pyright               -> node (pacman / brew; node is a managed dependency)
+--    ansiblels             -> node (AUR / npm); also shells out to `ansible-lint`
 local servers = {
   -- clangd = {},
   -- gopls = {},
-  cssls = {},
-  pyright = {},
   -- rust_analyzer = {},
-  -- tsserver = {},
-  html = { filetypes = { 'html', 'twig', 'hbs'} },
+  -- ts_ls = {},
+  pyright = {},
+  ansiblels = {},
+  terraformls = {},
+  systemd_lsp = {},
+  nginx_language_server = {},
   lua_ls = {
-    Lua = {
-      workspace = { checkThirdParty = false },
-      telemetry = { enable = false },
+    settings = {
+      Lua = {
+        workspace = { checkThirdParty = false },
+        telemetry = { enable = false },
+      },
     },
   },
 }
 
--- Setup neovim lua configuration
+-- Setup neovim lua configuration (must run before lua_ls is enabled)
 require('neodev').setup()
 
--- nvim-cmp supports additional completion capabilities, so broadcast that to servers
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
+-- nvim-cmp supports additional completion capabilities, so broadcast that to
+-- every server via the wildcard config.
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
+vim.lsp.config('*', { capabilities = capabilities })
 
--- TESTING if I can remove this
--- mason_lspconfig.setup_handlers {
---   function(server_name)
---     require('lspconfig')[server_name].setup {
---       capabilities = capabilities,
---       on_attach = on_attach,
---       settings = servers[server_name],
---       filetypes = (servers[server_name] or {}).filetypes,
---     }
---   end
--- }
+-- Register per-server overrides.
+for server, config in pairs(servers) do
+  vim.lsp.config(server, config)
+end
+
+-- Enable the servers directly. Core auto-starts each on a matching buffer when
+-- it finds the executable on PATH (installed via the per-OS install script),
+-- and quietly does nothing if the binary is absent.
+vim.lsp.enable(vim.tbl_keys(servers))
 
 -- [[ Configure nvim-cmp ]]
 -- See `:help cmp`
