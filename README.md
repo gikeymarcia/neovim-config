@@ -17,7 +17,7 @@ writing/editing
 ### Supports
 
 - Neovim v0.11+
-- Linux and MacOS
+- ArchLinux and MacOS
 
 ## Installation
 
@@ -25,22 +25,44 @@ writing/editing
 
 ```bash
 git clone https://github.com/gikeymarcia/neovim-config.git ~/.config/nvim
-nvim  # plugins should automatically install
+
+# install language servers (pick your OS)
+cd ~/.config/nvim
+./install-language-servers-Arch.sh     # Arch
+./install-language-servers-MacOS.sh    # macOS
+
+nvim  # lazy.nvim installs plugins on first launch
 ```
 
-### Requirements
+These scripts install the language servers plus the linters and helpers listed
+below. If you are not on Arch or MacOS you will need the following.
 
-- `ripgrep` for nvim-telescope
-- `pandoc` and `entr` for markdown previewing features
-- [nerdfonts][nerdfonts] installed (checkout my [ansible role][nf-ansible])
+## Tooling
 
-#### Linters
+### Language servers
+
+- lua_ls
+- pyright
+- ansiblels
+- terraformls
+- systemd_lsp
+- nginx_language_server
+
+### Linters
 
 - `yamllint` for yaml/ansible
 - `shellcheck` for Bash scripting
+- `ansible-lint` for Ansible (also used by the ansible language server)
 
-From within nvim you can run `:Mason` to pick language servers to install. You
-can manage (install/remove/update) plugins with `:Lazy`
+### Helpers
+
+- `ripgrep` for nvim-telescope
+- `pandoc` and `entr` for markdown previewing features
+- `tree-sitter` CLI + a C toolchain to compile treesitter parsers and
+  telescope-fzf-native (Arch: `base-devel`; macOS: Xcode CLT via
+  `xcode-select --install`)
+- [nerdfonts][nerdfonts] installed (checkout my [ansible role][nf-ansible]) —
+  *not* handled by the playbook
 
 ## Useful keymaps
 
