@@ -1,3 +1,9 @@
 kickstart-is	kickstart.txt	/*kickstart-is*
 kickstart-is-not	kickstart.txt	/*kickstart-is-not*
 kickstart.nvim	kickstart.txt	/*kickstart.nvim*
+tree-sitter-text-objects	tree-sitter-text-objects-usage.txt	/*tree-sitter-text-objects*
+ts-textobjects	tree-sitter-text-objects-usage.txt	/*ts-textobjects*
+ts-textobjects-basics	tree-sitter-text-objects-usage.txt	/*ts-textobjects-basics*
+ts-textobjects-extending	tree-sitter-text-objects-usage.txt	/*ts-textobjects-extending*
+ts-textobjects-recipes	tree-sitter-text-objects-usage.txt	/*ts-textobjects-recipes*
+ts-textobjects-reference	tree-sitter-text-objects-usage.txt	/*ts-textobjects-reference*

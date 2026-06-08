@@ -1,53 +1,30 @@
 --[[
 
-=====================================================================
-==================== READ THIS BEFORE CONTINUING ====================
-=====================================================================
-
 Kickstart.nvim is *not* a distribution.
 
-Kickstart.nvim is a template for your own configuration.
-  The goal is that you can read every line of code, top-to-bottom, understand
-  what your configuration is doing, and modify it to suit your needs.
+If you don't know anything about Lua, I recommend taking some time to read through
+a guide. One possible example:
+- https://learnxinyminutes.com/docs/lua/
 
-  Once you've done that, you should start exploring, configuring and tinkering to
-  explore Neovim!
-
-  If you don't know anything about Lua, I recommend taking some time to read through
-  a guide. One possible example:
-  - https://learnxinyminutes.com/docs/lua/
-
-
-  And then you can explore or search through `:help lua-guide`
-  - https://neovim.io/doc/user/lua-guide.html
-
-
-Kickstart Guide:
-
-I have left several `:help X` comments throughout the init.lua
-You should run that command and read that help section for more information.
-
-In addition, I have some `NOTE:` items throughout the file.
-These are for you, the reader to help understand what is happening. Feel free to delete
-them once you know what you're doing, but they should serve as a guide for when you
-are first encountering a few different constructs in your nvim config.
+And then you can explore or search through `:help lua-guide`
+- https://neovim.io/doc/user/lua-guide.html
 
 I hope you enjoy your Neovim journey,
 - TJ
 
-P.S. You can delete this when you're done too. It's your config now :)
 --]]
--- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
+-- enable nerd-font glyphs (diagnostic signs, etc.)
+vim.g.have_nerd_font = true
 
 -- Install package manager
 --    https://github.com/folke/lazy.nvim
 --    `:help lazy.nvim.txt` for more info
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
-if not vim.loop.fs_stat(lazypath) then
+if not vim.uv.fs_stat(lazypath) then
   vim.fn.system {
     'git',
     'clone',
@@ -59,13 +36,7 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- NOTE: Here is where you install your plugins.
---  You can configure plugins using the `config` key.
---
---  You can also configure plugins after the setup call,
---    as they will be available in your neovim runtime.
 require('lazy').setup({
-  -- NOTE: First, some plugins that don't require any configuration
 
   -- Git related plugins
   { 'tpope/vim-fugitive',
@@ -76,14 +47,15 @@ require('lazy').setup({
   },
   'tpope/vim-rhubarb',
 
-  -- Detect trailing whitespace
-  'ntpeters/vim-better-whitespace',
+  -- Trailing whitespace: highlight (all filetypes incl. markdown) + trim
+  { 'echasnovski/mini.trailspace', version = false, opts = {} },
+
+  -- Surround text objects: sa add / sd delete / sr replace (uses `s` prefix)
+  { 'echasnovski/mini.surround', version = false, opts = {} },
 
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
 
-  -- NOTE: This is where your plugins related to LSP can be installed.
-  --  The configuration is done below. Search for lspconfig to find it below.
   {
     -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
@@ -97,21 +69,29 @@ require('lazy').setup({
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
       { 'j-hui/fidget.nvim', tag = 'legacy', opts = {} },
 
-      -- Additional lua configuration, makes nvim stuff amazing!
-      'folke/neodev.nvim',
-
-      -- Allows extra capabilities provided by blink.cmp
-      -- https://cmp.saghen.dev/installation#lazy-nvim
-      {
-        'saghen/blink.cmp',
-        branch = 'v1'
-      },
-
+      -- JSON Schema catalog (schemastore.org) fed to yamlls below
+      'b0o/SchemaStore.nvim',
     },
   },
 
   {
-    -- Autocompletion
+    -- Configures lua_ls for editing your Neovim config: adds the right
+    -- libraries on the fly as you `require()` modules.
+    'folke/lazydev.nvim',
+    ft = 'lua',
+    opts = {
+      library = {
+        -- pull in luvit (vim.uv) types when `vim.uv` is referenced
+        { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
+      },
+    },
+  },
+
+  {
+    -- Autocompletion.
+    -- PLAN: migrate to blink.cmp (faster, actively developed) once its v2
+    -- line lands and settles. Reminder: check blink.cmp v2 status in Dec 2026
+    -- -> https://github.com/saghen/blink.cmp/releases
     'hrsh7th/nvim-cmp',
     event = "InsertEnter",
     dependencies = {
@@ -195,14 +175,10 @@ require('lazy').setup({
   {
     -- Add indentation guides even on blank lines
     'lukas-reineke/indent-blankline.nvim',
-    -- Enable `lukas-reineke/indent-blankline.nvim`
     -- See `:help indent_blankline.txt`
     main = "ibl",
     opts = { },
   },
-
-  -- "gc" to comment visual regions/lines
-  { 'numToStr/Comment.nvim', opts = {} },
 
   -- Fuzzy Finder (files, lsp, etc)
   {
@@ -211,9 +187,6 @@ require('lazy').setup({
     version = '*',
     dependencies = {
       'nvim-lua/plenary.nvim',
-      -- Fuzzy Finder Algorithm which requires local dependencies to be built.
-      -- Only load if `make` is available. Make sure you have the system
-      -- requirements installed.
       {
         'nvim-telescope/telescope-fzf-native.nvim',
         -- NOTE: If you are having trouble with this installation,
@@ -233,14 +206,10 @@ require('lazy').setup({
     lazy = false,
     build = ':TSUpdate',
     dependencies = {
-      'nvim-treesitter/nvim-treesitter-textobjects',
-      branch = "main",
-      init = function()
-        vim.g.no_plugin_maps = true
-      end,
-      config = function()
-        -- this is where nvim-treesitter-textobjects config goes
-      end,
+      -- textobjects: operate on functions/classes/arguments as motions.
+      -- Configured in the treesitter section below; see
+      -- doc/tree-sitter-text-objects-usage.txt for usage.
+      { 'nvim-treesitter/nvim-treesitter-textobjects', branch = 'main' },
     },
   },
 
@@ -285,6 +254,12 @@ vim.opt.list = true             --  See `:help 'list'` and `:help 'listchars'`
 vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 -- Preview substitutions live, as you type!
 vim.opt.inccommand = 'split'
+vim.o.winborder = 'rounded'     -- rounded borders on floating windows (hover, signature, ...)
+
+-- FOLDING (treesitter-aware). Start fully unfolded; fold manually with za / zM.
+vim.o.foldmethod = 'expr'
+vim.o.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+vim.o.foldlevelstart = 99
 
 -- SWAP FILE MADNESS
 vim.o.swapfile = false
@@ -306,6 +281,24 @@ vim.opt.confirm = true
 -- Keymaps for better default experience
 -- See `:help vim.keymap.set()`
 vim.keymap.set('n', '<leader>vrc', '<cmd>source $MYVIMRC<CR>', { desc = "Reload $MYVIMRC"})
+vim.keymap.set('n', '<leader>vl', function()
+  local clients = vim.lsp.get_clients { bufnr = 0 }
+  if vim.tbl_isempty(clients) then
+    vim.notify('No LSP attached to this buffer', vim.log.levels.WARN)
+    return
+  end
+  local names = vim.tbl_map(function(c) return c.name end, clients)
+  vim.notify('LSP: ' .. table.concat(names, ', '))
+end, { desc = '[V]iew [L]SP clients attached to buffer' })
+vim.keymap.set('n', '<leader>vf', function()
+  vim.notify('filetype: ' .. (vim.bo.filetype == '' and '(none)' or vim.bo.filetype))
+end, { desc = '[V]iew [F]iletype of buffer' })
+vim.keymap.set('n', '<leader>vh', function()
+  local on = not vim.lsp.inlay_hint.is_enabled()
+  vim.lsp.inlay_hint.enable(on)
+  vim.notify('inlay hints ' .. (on and 'ON' or 'OFF'))
+end, { desc = '[V]iew toggle inlay [H]ints' })
+vim.keymap.set('n', '<leader>tw', function() require('mini.trailspace').trim() end, { desc = '[T]rim trailing [W]hitespace' })
 vim.keymap.set('n', '<leader>j', '<cmd>cnext<CR>zz', { desc = 'next item in the quick fix list'})
 vim.keymap.set('n', '<leader>k', '<cmd>cprev<CR>zz', { desc = 'prev item in the quick fix list'})
 vim.keymap.set('n', '<leader>m', '<cmd>w<CR><cmd>!~/.config/nvim/scripts/pandoc/markdown-watch.sh "%" &<CR><CR>',
@@ -355,15 +348,12 @@ vim.keymap.set('n', '<leader>_', 'ciW__<esc>P', { desc = 'wrap word in underscor
 -- insert mode
 vim.keymap.set('i', '<C-v>', '<esc><cmd>set paste<cr>a<C-r>*<esc><cmd>set paste!<cr>a', { desc = 'Paste from clipboard (with paste mode)'})
 
--- IMPORT INCOMPLETE
--- Stopped after 'relative moves into jump list'. Need to check further
-
 -- [[ Highlight on yank ]]
--- See `:help vim.highlight.on_yank()`
+-- See `:help vim.hl.on_yank()`
 local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
 vim.api.nvim_create_autocmd('TextYankPost', {
   callback = function()
-    vim.highlight.on_yank({ timeout=500 })
+    vim.hl.on_yank({ timeout=500 })
   end,
   group = highlight_group,
   pattern = '*',
@@ -425,7 +415,7 @@ vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { de
 vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
 vim.keymap.set('n', '<leader>ss', require('telescope.builtin').lsp_document_symbols, { desc = '[S]earch [s]ymbols' })
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
--- vim.keymap.set('n', '<leader>sR', require('telescope.builtin').resume, { desc = '[S]earch [R]resume' })
+vim.keymap.set('n', '<leader>sR', require('telescope.builtin').resume, { desc = '[S]earch [R]esume' })
 vim.keymap.set('n', '<leader>sr', require('telescope.builtin').lsp_references, { desc = '[S]earch [R]eferences' })
 vim.keymap.set('n', '<leader>sk', require('telescope.builtin').keymaps, { desc = '[S]earch [K]eymaps' })
 
@@ -435,7 +425,6 @@ require('nvim-treesitter').setup {
   install_dir = vim.fn.stdpath('data') .. '/site',
 }
 require('nvim-treesitter').install { 'bash', 'css', 'desktop', 'dockerfile', 'git_config', 'gitcommit', 'gitignore', 'hcl', 'http', 'hyprlang', 'jinja', 'jinja_inline', 'json', 'go', 'lua', 'markdown', 'markdown_inline', 'python', 'readline', 'rust', 'ssh_config', 'terraform', 'tmux', 'javascript', 'typescript', 'vimdoc', 'vim', 'yaml', 'zsh' }
--- require('nvim-treesitter').install { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'javascript', 'typescript', 'vimdoc', 'vim' }
 
 -- The `main` branch of nvim-treesitter no longer auto-enables highlighting via
 -- a `highlight = { enable = true }` option. Start the treesitter highlighter
@@ -447,6 +436,63 @@ vim.api.nvim_create_autocmd('FileType', {
     pcall(vim.treesitter.start)
   end,
 })
+
+-- [[ Treesitter textobjects ]]
+-- Structural editing: select / move / swap by syntax node (function, class,
+-- argument, ...). Full usage guide: doc/tree-sitter-text-objects-usage.txt
+require('nvim-treesitter-textobjects').setup {
+  select = { lookahead = true }, -- if cursor is before the textobject, jump to it
+  move = { set_jumps = true }, --    record moves in the jumplist (<C-o> returns)
+}
+
+-- SELECT (operator-pending `o` + visual `x`): e.g. `daf`, `cif`, `vac`, `yaa`
+local ts_select = require 'nvim-treesitter-textobjects.select'
+local select_maps = {
+  -- https://github.com/nvim-treesitter/nvim-treesitter-textobjects/blob/main/BUILTIN_TEXTOBJECTS.md
+  ['af'] = '@function.outer',
+  ['if'] = '@function.inner',
+  ['ac'] = '@class.outer',
+  ['ic'] = '@class.inner',
+  ['aa'] = '@parameter.outer', -- a = argument
+  ['ia'] = '@parameter.inner',
+  ['ai'] = '@conditional.outer',
+  ['ii'] = '@conditional.inner',
+  ['al'] = '@loop.outer',
+  ['il'] = '@loop.inner',
+  ['a='] = '@assignment.outer',
+  ['i='] = '@assignment.inner',
+}
+for lhs, capture in pairs(select_maps) do
+  vim.keymap.set({ 'x', 'o' }, lhs, function()
+    ts_select.select_textobject(capture, 'textobjects')
+  end, { desc = 'TS select ' .. capture })
+end
+
+-- MOVE (normal/visual/operator-pending): jump between functions and arguments.
+-- (class moves are left unmapped: ]c/[c belong to gitsigns hunks.)
+local ts_move = require 'nvim-treesitter-textobjects.move'
+local move_maps = {
+  goto_next_start = { [']f'] = '@function.outer', [']a'] = '@parameter.inner' },
+  goto_next_end = { [']F'] = '@function.outer' },
+  goto_previous_start = { ['[f'] = '@function.outer', ['[a'] = '@parameter.inner' },
+  goto_previous_end = { ['[F'] = '@function.outer' },
+}
+for fn, maps in pairs(move_maps) do
+  for lhs, capture in pairs(maps) do
+    vim.keymap.set({ 'n', 'x', 'o' }, lhs, function()
+      ts_move[fn](capture, 'textobjects')
+    end, { desc = 'TS ' .. fn .. ' ' .. capture })
+  end
+end
+
+-- SWAP the argument under the cursor with the next / previous one.
+local ts_swap = require 'nvim-treesitter-textobjects.swap'
+vim.keymap.set('n', '<leader>a', function()
+  ts_swap.swap_next '@parameter.inner'
+end, { desc = 'Swap argument with next' })
+vim.keymap.set('n', '<leader>A', function()
+  ts_swap.swap_previous '@parameter.inner'
+end, { desc = 'Swap argument with previous' })
 
 -- Diagnostic keymaps
 -- See :help vim.diagnostic.Opts
@@ -476,6 +522,8 @@ vim.diagnostic.config {
       return diagnostic_message[diagnostic.severity]
     end,
   },
+  -- full, multi-line diagnostic rendered under the current line
+  virtual_lines = { current_line = true },
 }
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
@@ -544,12 +592,35 @@ vim.api.nvim_create_autocmd('LspAttach', {
 --    nginx_language_server -> Python (pipx)
 --    pyright               -> node (pacman / brew; node is a managed dependency)
 --    ansiblels             -> node (AUR / npm); also shells out to `ansible-lint`
+--    yamlls                -> pacman / homebrew installed
 local servers = {
   -- clangd = {},
   -- gopls = {},
   -- rust_analyzer = {},
   -- ts_ls = {},
-  pyright = {},
+  bashls = {},
+  pyright = {
+    settings = {
+      python = {
+        analysis = {
+          inlayHints = {
+            variableTypes = true,
+            functionReturnTypes = true,
+            callArgumentNames = true,
+          },
+        },
+      },
+    },
+  },
+  yamlls = {
+    settings = {
+      yaml = {
+        -- use SchemaStore.nvim's catalog (more current) instead of the built-in
+        schemaStore = { enable = false, url = '' },
+        schemas = require('schemastore').yaml.schemas(),
+      },
+    },
+  },
   ansiblels = {},
   terraformls = {},
   systemd_lsp = {},
@@ -557,15 +628,13 @@ local servers = {
   lua_ls = {
     settings = {
       Lua = {
+        hint = { enable = false }, -- inlay hints
         workspace = { checkThirdParty = false },
         telemetry = { enable = false },
       },
     },
   },
 }
-
--- Setup neovim lua configuration (must run before lua_ls is enabled)
-require('neodev').setup()
 
 -- nvim-cmp supports additional completion capabilities, so broadcast that to
 -- every server via the wildcard config.
@@ -581,6 +650,10 @@ end
 -- it finds the executable on PATH (installed via the per-OS install script),
 -- and quietly does nothing if the binary is absent.
 vim.lsp.enable(vim.tbl_keys(servers))
+
+-- Show inline type hints from any server that supports them.
+-- Toggle: :lua vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+vim.lsp.inlay_hint.enable(true)
 
 -- [[ Configure nvim-cmp ]]
 -- See `:help cmp`
@@ -642,6 +715,8 @@ cmp.setup {
     end, { 'i', 's' }),
   },
   sources = {
+    -- lazydev: complete require() paths for your nvim config / plugins
+    { name = 'lazydev', group_index = 0 },
     { name = 'nvim_lsp' },
     { name = 'luasnip' },
     { name = 'path' },
