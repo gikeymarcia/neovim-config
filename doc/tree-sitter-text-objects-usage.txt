@@ -1,0 +1,136 @@
+Tree-sitter Text Objects — Usage Guide
+======================================
+                                   *tree-sitter-text-objects* *ts-textobjects*
+
+Structural editing: operate on whole syntax nodes (a function, a class, an
+argument) instead of counting lines or characters. Maps are wired up in
+init.lua (search "Treesitter textobjects"). Examples below use Python, since
+that's the main workflow.
+
+The grammar of a text object is:   <operator><a|i><object>
+
+  operator   d delete   c change   y yank   v select(visual)   = (etc.)
+  a / i      a = "around" (the whole thing, incl. the def/header line)
+             i = "inner"  (just the contents / body)
+  object     f function   c class   a argument   i conditional
+             l loop       = assignment
+
+So `daf` = delete-a-function, `cif` = change-inner-function, `vac` = visually
+select a class. Same muscle memory as vim's built-in `diw` / `ci"`.
+
+
+                                                       *ts-textobjects-basics*
+## 101 - basics
+---------------
+
+The handful you'll use every day. Put the cursor *anywhere inside* the thing.
+
+  vaf      select a whole function (header + body)
+  daf      delete a whole function
+  cif      change a function's body (keeps the `def` line, drops you in insert)
+  yaf      yank a whole function
+
+  vac dac cic    same, for a class
+  cia            change an argument's value
+  daa            delete an argument (and its trailing comma)
+
+  ]f  [f         jump to next / previous function
+  <leader>a      swap the argument under the cursor with the NEXT one
+  <leader>A      swap it with the PREVIOUS one
+
+Worked example — cursor on the `return n` line:
+
+      @functools.cache
+      def fib(n: int) -> int:
+          if n < 2:               <- vif  selects just the body (if..return)
+              return n            <- (cursor here)
+          return fib(n-1) + fib(n-2)
+                                  <- vaf  selects the whole `def fib` block
+                                          (a decorator on its own line may or
+                                           may not be included — grammar-dependent)
+
+Reorder arguments without retyping — cursor on `b` in  def f(a, b, c):
+      <leader>a   ->  def f(a, c, b):     (b swapped right)
+      <leader>A   ->  def f(b, a, c):     (b swapped left)
+
+
+                                                    *ts-textobjects-reference*
+## full map reference
+---------------------
+
+SELECT — after an operator (d/c/y) or in visual mode. `a`=around, `i`=inner.
+
+      af  if      function        (a includes the `def ...:` line)
+      ac  ic      class
+      aa  ia      argument / parameter
+      ai  ii      conditional      (if / elif / else)
+      al  il      loop             (for / while)
+      a=  i=      assignment       (a= whole statement, i= the value/RHS)
+
+MOVE — normal / visual / operator-pending. Recorded in the jumplist, so
+       <C-o> jumps back. (class moves are intentionally unmapped: ]c / [c
+       are gitsigns' "next/prev hunk".)
+
+      ]f  [f      next / previous function start
+      ]F  [F      next / previous function end
+      ]a  [a      next / previous argument
+
+SWAP — normal mode.
+
+      <leader>a   swap argument with the next
+      <leader>A   swap argument with the previous
+
+
+                                                      *ts-textobjects-recipes*
+## python recipes
+-----------------
+
+Delete a dead helper          cursor in it ->  daf
+Rewrite a function body       cif  then type the new body
+Pull a method out of a class  vaf  d   (then p where you want it)
+Duplicate an argument         yaa  then  `a` / `p` to paste it into the list
+Wrap just the loop body       vil  then your surround/indent of choice
+Operate on the whole loop     dal   (deletes the entire for/while block)
+Edit only the test of an if   cii   (changes `n < 2`, leaves the branch)
+Fix argument order            <leader>a / <leader>A  to shuffle, no retyping
+Jump method-to-method         ]f ]f ]f ...   (and [f back up)
+
+Combine with counts and dot-repeat like any vim motion:
+      d2af     delete this function and the next
+      cif ... <Esc> .   change one body, then `.` to repeat on another
+
+
+                                                    *ts-textobjects-extending*
+## extending
+------------
+
+The map tables are in init.lua — `select_maps` (select) and `move_maps`
+(jumps). To add a text object, add one line with the capture name.
+
+Available Python captures (queries/python/textobjects.scm):
+
+      @function.outer  / .inner
+      @class.outer     / .inner
+      @parameter.outer / .inner
+      @conditional.outer / .inner
+      @loop.outer      / .inner
+      @assignment.outer / .inner / .lhs / .rhs
+      @call.outer      / .inner
+      @block.outer     / .inner
+      @comment.outer   / .inner
+      @return.outer    / .inner
+      @number.inner
+      @statement.outer
+
+Example — map `ar`/`ir` to a return statement, and `]r` to jump to returns:
+
+      select_maps['ar'] = '@return.outer'
+      select_maps['ir'] = '@return.inner'
+      move_maps.goto_next_start[']r'] = '@return.outer'
+
+`lookahead = true` means a select works even when the cursor is just before
+the object on the line; `set_jumps = true` makes the MOVE maps add to the
+jumplist. Both are set in the `.setup{}` call.
+
+See also:  :help vim.treesitter  ·  nvim-treesitter-textobjects (main branch)
+ vim:tw=78:ts=8:ft=help:norl:
